@@ -7,6 +7,7 @@ class ProductoBD {
   }
 
   getAll () {
+    console.log('getAll')
     return this.productos
   }
 

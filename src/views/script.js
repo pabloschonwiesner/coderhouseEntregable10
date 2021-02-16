@@ -1,3 +1,5 @@
+
+
 let form = document.querySelector('#form')
 let title = document.querySelector('#title')
 let price = document.querySelector('#price')
@@ -9,7 +11,6 @@ let id;
 window.addEventListener('DOMContentLoaded', iniciar)
 
 async function iniciar () {
-
   let urlString = window.location.href
   let url = new URL(urlString)
   let ultimoParam = url.pathname.split('/')[url.pathname.split('/').length -1]
@@ -45,6 +46,7 @@ function sendData (event) {
     headers: {'Content-Type': 'application/json'}, 
     body})
   .then( () => document.location.href = 'http://localhost:8080/productos/vista')
+  .catch( err => console.log(err))
 }
 
 function eliminarProducto () {
