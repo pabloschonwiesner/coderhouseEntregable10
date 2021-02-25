@@ -1,5 +1,5 @@
 import express from 'express'
-import producto from '../index'
+import {producto} from '../index'
 import handlebars from 'express-handlebars'
 
 const app = express()
@@ -40,30 +40,30 @@ app.get('/', (req, res) => {
 
 
 
-app.get('/productos/vista', (req, res) => {
-  res.render('productos', { productos: producto.getAll() })
-})
+// app.get('/productos/vista', (req, res) => {
+//   res.render('productos', { productos: producto.getAll() })
+// })
 
-app.get('/productos/nuevoProducto', (req, res) => {
-  res.render('nuevoProducto', {imagenes})
-})
+// app.get('/productos/nuevoProducto', (req, res) => {
+//   res.render('nuevoProducto', {imagenes})
+// })
 
-app.get('/productos/editarProducto/:id', (req, res) => {
-  res.render('editarProducto', { producto: producto.getOne(+req.params.id), imagenes,  helpers: { selectedOption: function (value: any, options: any) { 
-    let items = ''
+// app.get('/productos/editarProducto/:id', (req, res) => {
+//   res.render('editarProducto', { producto: producto.getOne(+req.params.id), imagenes,  helpers: { selectedOption: function (value: any, options: any) { 
+//     let items = ''
     
-    imagenes.forEach( i => {
-      if(i.path == value) {
-        items = `${items}<option value="${i.path}" selected>${i.label}</option>`
-      } else {
-        items = `${items}<option value="${i.path}">${i.label}</option>`
-      }
-    })
+//     imagenes.forEach( i => {
+//       if(i.path == value) {
+//         items = `${items}<option value="${i.path}" selected>${i.label}</option>`
+//       } else {
+//         items = `${items}<option value="${i.path}">${i.label}</option>`
+//       }
+//     })
     
     
-      return items
-    }
-  }})
-})
+//       return items
+//     }
+//   }})
+// })
 
 export default app
