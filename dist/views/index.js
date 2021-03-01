@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var index_1 = __importDefault(require("../index"));
+var index_1 = require("../index");
 var express_handlebars_1 = __importDefault(require("express-handlebars"));
 var app = express_1.default();
-app.engine('hbs', express_handlebars_1.default({ extname: '.hbs', defaultLayout: 'index.hbs', layoutsDir: __dirname + '/views/layouts', partialsDir: __dirname + '/views/partials' }));
+app.engine('hbs', express_handlebars_1.default({ extname: '.hbs', defaultLayout: 'index.hbs', layoutsDir: __dirname + '/layouts', partialsDir: __dirname + '/partials' }));
 app.set('view engine', 'hbs');
 app.set('views', __dirname);
 var imagenes = [
@@ -21,14 +21,8 @@ var imagenes = [
     { path: "https://cdn3.iconfinder.com/data/icons/education-209/64/graduation-square-academic-cap-school-512.png", label: 'Sombrero egresado' },
     { path: "https://cdn3.iconfinder.com/data/icons/education-209/64/bag-pack-container-school-512.png", label: 'Mochila' },
 ];
-app.get('/productos/vista', function (req, res) {
-    res.render('productos', { productos: index_1.default.getAll() });
-});
-app.get('/productos/nuevoProducto', function (req, res) {
-    res.render('nuevoProducto', { imagenes: imagenes });
-});
-app.get('/productos/editarProducto/:id', function (req, res) {
-    res.render('editarProducto', { producto: index_1.default.getOne(+req.params.id), imagenes: imagenes, helpers: { selectedOption: function (value, options) {
+app.get('/', function (req, res) {
+    res.render('abmProductos', { productos: index_1.producto.getAll(), imagenes: imagenes, helpers: { selectedOption: function (value, options) {
                 var items = '';
                 imagenes.forEach(function (i) {
                     if (i.path == value) {
@@ -42,4 +36,24 @@ app.get('/productos/editarProducto/:id', function (req, res) {
             }
         } });
 });
+// app.get('/productos/vista', (req, res) => {
+//   res.render('productos', { productos: producto.getAll() })
+// })
+// app.get('/productos/nuevoProducto', (req, res) => {
+//   res.render('nuevoProducto', {imagenes})
+// })
+// app.get('/productos/editarProducto/:id', (req, res) => {
+//   res.render('editarProducto', { producto: producto.getOne(+req.params.id), imagenes,  helpers: { selectedOption: function (value: any, options: any) { 
+//     let items = ''
+//     imagenes.forEach( i => {
+//       if(i.path == value) {
+//         items = `${items}<option value="${i.path}" selected>${i.label}</option>`
+//       } else {
+//         items = `${items}<option value="${i.path}">${i.label}</option>`
+//       }
+//     })
+//       return items
+//     }
+//   }})
+// })
 exports.default = app;
