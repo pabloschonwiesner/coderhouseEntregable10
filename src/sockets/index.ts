@@ -1,4 +1,4 @@
-import { producto, io} from './../index'
+import { producto, mensaje, io} from './../index'
 
 io.on('connection', (client: any) => {
   console.log('cliente conectado')
@@ -10,6 +10,11 @@ io.on('connection', (client: any) => {
     let productoAgregado = producto.add(JSON.parse(data))
     io.sockets.emit('productoAgregado', JSON.stringify(productoAgregado))
     
+  })
+
+  client.on('message', (data: any) => {
+    let mensajeAgregado = mensaje.add(data)
+    io.sockets.emit('message', mensajeAgregado)
   })
 
   function emitirListaProductos() {

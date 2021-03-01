@@ -4,30 +4,32 @@ let price = document.querySelector('#price')
 let thumbnail = document.querySelector('#thumbnail')
 let tbody = document.querySelector('tbody')
 
+let chat = document.querySelector('#chat')
+let email = document.querySelector('#email')
+let message = document.querySelector('#message')
+let enviarMensaje = document.querySelector('#enviarMensaje')
+let lista = document.querySelector('#lista')
+
+
 form.addEventListener('submit', sendData)
+email.addEventListener('input', validarEmail)
+enviarMensaje.addEventListener('click', sendMessage)
 
 function sendData (event) {
   event.preventDefault()
   socket.emit('agregarProducto', JSON.stringify({title: title.value, price: price.value, thumbnail: thumbnail.value}))
-  // let body, url;
+}
 
-  // if(id) {
-  //   url = `http://localhost:8080/api/productos/${id}`
-  //   body = JSON.stringify({id, title: title.value, price: price.value, thumbnail: thumbnail.value})
-  // } else {
-  //   url = `http://localhost:8080/api/productos`
-  //   body = JSON.stringify({title: title.value, price: price.value, thumbnail: thumbnail.value})
-  // }
-
-  // fetch(url, { 
-  //   method: id ? 'PUT' : 'POST', 
-  //   headers: {'Content-Type': 'application/json'}, 
-  //   body})
-  // .then( () => document.location.href = 'http://localhost:8080/productos/vista')
+function sendMessage (event) {
+  event.preventDefault()
+  socket.emit('message', {
+    email: email.value,
+    mensaje: message.value
+  })
+  message.value = ''
 }
 
 function crearRegistroTabla ( producto ) {
-  console.log(producto.title)
   let tr = document.createElement('tr')
   tr.appendChild(crearColumnaTabla(producto.title))
   tr.appendChild(crearColumnaTabla(producto.price))
@@ -71,24 +73,61 @@ function botonEditar () {
   return td
 }
 
+function validarEmail() {
+  let format = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+
+  if (format.test(email.value)) {
+    enviarMensaje.disabled = false
+  } else {
+    enviarMensaje.disabled = true
+  }
+}
+
+function crearMensaje ( mensaje ) {
+  console.log({mensaje})
+  let li = document.createElement('li')
+  let spanEmail = document.createElement('span')
+  let spanFechaHora = document.createElement('span')
+  let spanMensaje = document.createElement('span')
+
+  spanEmail.innerText = mensaje.email
+  spanEmail.className = 'emailStyle'
+  spanFechaHora.innerText = mensaje.fechaHora
+  spanFechaHora.className = 'fechaHoraStyle'
+  spanMensaje.innerText = mensaje.mensaje
+  spanMensaje.className = 'mensajeStyle'
+
+  li.appendChild(spanEmail)
+  li.appendChild(spanFechaHora)
+  li.appendChild(spanMensaje)
+
+  lista.appendChild(li)
+}
+
 
 let socket = io()
+let sessionID = null
 
 socket.on('connect', () => {
   console.log('conectado')
+
+
+
   socket.on('disconnect', () => {
     console.log('desconectado')
   })
   
   socket.on('productos', (data) => {
-    console.log(data)
     let productos = JSON.parse(data)
     productos.forEach( producto => crearRegistroTabla(producto))
   })
 
   socket.on('productoAgregado', (data) => {
-    console.log(JSON.parse(data))
     crearRegistroTabla(JSON.parse(data))
+  })
+
+  socket.on('message', (data) => {
+    crearMensaje(data)
   })
 })
 

@@ -3,8 +3,10 @@ import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import routes from './routes/index'
 import ProductoBD from './ProductoBD'
+import MensajeBD from './MensajeBD'
 
 export let producto = new ProductoBD()
+export let mensaje = new MensajeBD()
 
 dotenv.config() 
 const app = express()
