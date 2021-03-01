@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/views'))
 
 app.get('/', (req, res) => {
-  res.sendFile('./views/index.html')
+  res.sendFile(`${__dirname}/views/index.html`)
 })
 
 app.use('/api', routes)
