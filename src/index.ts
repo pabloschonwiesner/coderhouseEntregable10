@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import routes from './routes/index'
 import ProductoBD from './ProductoBD'
 import MensajeBD from './MensajeBD'
-import path from 'path'
+import * as path from 'path';
 
 export let producto = new ProductoBD()
 export let mensaje = new MensajeBD()
@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/views'))
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '/views/index.html'))
+  res.sendFile(path.resolve(__dirname, './views/index.html'))
 })
 
 app.use('/api', routes)
