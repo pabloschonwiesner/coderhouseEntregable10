@@ -30,6 +30,7 @@ function sendMessage (event) {
 }
 
 function crearRegistroTabla ( producto ) {
+  console.log(producto)
   let tr = document.createElement('tr')
   tr.appendChild(crearColumnaTabla(producto.title))
   tr.appendChild(crearColumnaTabla(producto.price))
@@ -39,8 +40,9 @@ function crearRegistroTabla ( producto ) {
 }
 
 function crearColumnaTabla ( valor ) {
+  console.log(valor)
   let td = document.createElement('td')
-  if(valor.includes('http')) {
+  if(String(valor).includes('http')) {
     let img = document.createElement('img')
     img.src = valor
     img.className = "rounded"
@@ -119,6 +121,7 @@ socket.on('connect', () => {
   
   socket.on('productos', (data) => {
     let productos = JSON.parse(data)
+    console.log(productos)
     productos.forEach( producto => crearRegistroTabla(producto))
   })
 
