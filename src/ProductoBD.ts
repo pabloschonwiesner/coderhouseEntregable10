@@ -1,56 +1,68 @@
 import Producto from './Producto'
+const knexconfig = require('./config/knexConfigMysql.js')
+
+const knex = require('knex')(knexconfig);
 
 class ProductoBD {
-  private productos: Producto[];
-  constructor() {
-    this.productos = []
+  constructor () {
+    knex.schema.hasTable('productos')
+      .then( (exists: any) => {
+        if(!exists) {
+          knex.schema.createTable('productos', (table: any) => {
+            table.increments()
+            table.string('title', 50)
+            table.float('price')
+            table.string('thumbnail', 300)
+          })
+            .then(() => console.log('Tabla productos creada'))
+            .catch((err: any) => console.log(err))
+        }
+      } )
   }
 
   getAll () {
-    return this.productos
+    return knex('productos').select('*')
+      .then( (productos: any ) => productos)
+      .catch( () => [])
   }
 
   getOne ( id: number ) {
-    let producto = this.productos.find( i => i.getId() == id)
-    if(!producto) {
-      throw Error('Producto no encontrado')
-    }
-    return producto
+    return knex('productos').select({ id })
+      .then ( (data: any) => data )
+      .catch ( () => { throw Error('Producto no encontrado')} )
   }
 
   add ( producto: any ) {
-    let nuevoId = 1
-
-    if(this.productos.length > 0) {
-      let ultimoProducto = this.productos[this.productos.length -1]
-      nuevoId = ultimoProducto.getId() +1
-    }
-
-    let nuevoProducto = new Producto( nuevoId, producto.title, producto.price, producto.thumbnail );
-    this.productos.push(nuevoProducto);
-    return this.productos[this.productos.length -1]
+    return new Promise((resolve, reject) => {
+      let nuevoProducto = new Producto( 0, producto.title, producto.price, producto.thumbnail );    
+      knex('productos').insert(nuevoProducto)
+        .then( ( id: number ) => { resolve(id) })
+        .catch( ( err: any ) => {
+          console.log(err)
+          reject(JSON.stringify({ error: 'Error no se pudo insertar el producto'}))          
+        })
+    })
   }
 
   update ( producto: any) {
-    let updateProducto = new Producto(+producto.id, producto.title, +producto.price, producto.thumbnail)
-    let index = this.productos.findIndex( i => i.getId() == updateProducto.getId())
-
-    if(index < 0) {
-      throw Error('No existe el producto a actualizar')
-    }
-    this.productos[index] = updateProducto
-    return updateProducto
+    return new Promise((resolve, reject) => {
+      let updateProducto = new Producto(+producto.id, producto.title, +producto.price, producto.thumbnail)
+      knex('productos')
+        .where({ id : producto.id })
+        .update( updateProducto )
+        .then( (data: any) => { console.log(data); resolve(updateProducto) })
+        .catch ( (err: any) => reject(err) )
+    })
   }
 
   delete ( id: number) {
-    let index = this.productos.findIndex( i => i.getId() == id )
-    
-    if(index < 0) {
-      throw Error('No existe el producto a eliminar')
-    }
-
-    let deleteProducto = this.productos.splice(index, 1)
-    return deleteProducto
+    return new Promise((resolve, reject) => {
+      knex('productos')
+        .where({ id : id })
+        .deñl()
+        .then( (data: any) => { console.log(data); resolve(data) })
+        .catch ( (err: any) => reject(err) )
+    })
   }
 
 

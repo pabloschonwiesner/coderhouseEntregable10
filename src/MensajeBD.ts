@@ -1,25 +1,42 @@
 import Mensaje from './Mensaje'
-import fs from 'fs'
+const knexconfig = require('./config/knexConfigSqlite.js')
+
+const knex = require('knex')(knexconfig);
+
 
 class MensajeBD {
-  private mensajes: Mensaje[];
-  constructor() {
-    this.mensajes = []
+  constructor () {
+
+    if(!knex.schema.hasTable('mensajes')) {
+      knex.schema.createTableIfNotExists('mensajes', (table: any) => {
+        table.string('email', 50)
+        table.string('fechaHora', 50)
+        table.string('mensaje', 350)
+      })
+        .then(() => console.log('Tabla mensajes creada'))
+        .catch((err: any) => console.log(err))
+    }
   }
 
   getAll () {
-    return this.mensajes
+    return knex('mensajes').select('*')
+      .then( (mensajes: any ) => mensajes)
+      .catch( () => [])
   }
 
   add ( mensaje: any ) {
-    let nuevoMensaje = new Mensaje( mensaje.email, this.formatoDDMMYYYYHHMMSS(), mensaje.mensaje );
-    this.messageToFile(nuevoMensaje);
-    return nuevoMensaje
-  }
+    return new Promise((resolve, reject) => {
+      let nuevoMensaje = new Mensaje( mensaje.email, this.formatoDDMMYYYYHHMMSS(), mensaje.mensaje );
+      knex('mensajes').insert(nuevoMensaje)
+        .then( () => { resolve(nuevoMensaje) })
+        .catch( ( err: any ) => {
+          console.log(err)
+          reject(JSON.stringify({ error: 'Error no se pudo insertar el mensaje'}))
+          
+        })
+      
 
-  async messageToFile ( mensaje: any) {
-    await fs.promises.appendFile(`${__dirname}/mensajes.txt`, JSON.stringify(mensaje, null, '\t'), 'utf-8')
-    
+    })
   }
 
   formatoDDMMYYYYHHMMSS () {

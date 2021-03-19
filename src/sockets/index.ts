@@ -12,13 +12,13 @@ io.on('connection', (client: any) => {
     
   })
 
-  client.on('message', (data: any) => {
-    let mensajeAgregado = mensaje.add(data)
+  client.on('message', async (data: any) => {
+    let mensajeAgregado = await mensaje.add(data)
     io.sockets.emit('message', mensajeAgregado)
   })
 
-  function emitirListaProductos() {
-    let listaProductos = JSON.stringify(producto.getAll())
+  async function emitirListaProductos() {
+    let listaProductos = JSON.stringify(await producto.getAll())
     client.emit('productos', listaProductos)
   }
 
