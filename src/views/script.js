@@ -40,7 +40,7 @@ function crearRegistroTabla ( producto ) {
 
 function crearColumnaTabla ( valor ) {
   let td = document.createElement('td')
-  if(valor.includes('http')) {
+  if(valor.toString().includes('http')) {
     let img = document.createElement('img')
     img.src = valor
     img.className = "rounded"
@@ -84,7 +84,6 @@ function validarEmail() {
 }
 
 function crearMensaje ( mensaje ) {
-  console.log({mensaje})
   let li = document.createElement('li')
   let spanEmail = document.createElement('span')
   let spanFechaHora = document.createElement('span')

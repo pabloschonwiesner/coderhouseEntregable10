@@ -1,20 +1,14 @@
+const mongoose = require('mongoose')
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-class Producto {
-  private id: number;
-  private title: string;
-  private price: number;
-  private thumbnail: string;
+let Schema = mongoose.Schema;
 
-  constructor(id: number, title: string, price: number, thumbnail: string) {
-    this.id = id;
-    this.title = title;
-    this.price = price;
-    this.thumbnail = thumbnail;
-  }
+let productoSchema = new Schema({
+  title: String,
+  price: Number,
+  thumbnail: String
+})
 
-  getId () {
-    return this.id
-  }
-}
 
-export default Producto
+productoSchema.plugin(AutoIncrement, {inc_field: 'id'});
+export default mongoose.model('Producto', productoSchema)

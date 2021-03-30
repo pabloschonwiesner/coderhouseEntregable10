@@ -17,6 +17,7 @@ enviarMensaje.addEventListener('click', sendMessage)
 
 function sendData (event) {
   event.preventDefault()
+  console.log(JSON.stringify({title: title.value, price: price.value, thumbnail: thumbnail.value}));
   socket.emit('agregarProducto', JSON.stringify({title: title.value, price: price.value, thumbnail: thumbnail.value}))
 }
 
@@ -39,6 +40,7 @@ function crearRegistroTabla ( producto ) {
 }
 
 function crearColumnaTabla ( valor ) {
+  console.log(valor)
   let td = document.createElement('td')
   if(valor.includes('http')) {
     let img = document.createElement('img')
@@ -119,10 +121,12 @@ socket.on('connect', () => {
   
   socket.on('productos', (data) => {
     let productos = JSON.parse(data)
+    console.log(productos)
     productos.forEach( producto => crearRegistroTabla(producto))
   })
 
   socket.on('productoAgregado', (data) => {
+    console.log(data)
     crearRegistroTabla(JSON.parse(data))
   })
 

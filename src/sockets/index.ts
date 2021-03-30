@@ -6,19 +6,19 @@ io.on('connection', (client: any) => {
     console.log('cliente desconectado')
   })
 
-  client.on('agregarProducto', (data: any) => {
-    let productoAgregado = producto.add(JSON.parse(data))
+  client.on('agregarProducto', async (data: any) => {
+    let productoAgregado = await producto.add(JSON.parse(data))
     io.sockets.emit('productoAgregado', JSON.stringify(productoAgregado))
     
   })
 
-  client.on('message', (data: any) => {
-    let mensajeAgregado = mensaje.add(data)
+  client.on('message', async (data: any) => {
+    let mensajeAgregado = await mensaje.add(data)
     io.sockets.emit('message', mensajeAgregado)
   })
 
-  function emitirListaProductos() {
-    let listaProductos = JSON.stringify(producto.getAll())
+  async function emitirListaProductos() {
+    let listaProductos = JSON.stringify(await producto.getAll())
     client.emit('productos', listaProductos)
   }
 

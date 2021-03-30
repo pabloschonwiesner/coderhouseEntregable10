@@ -1,25 +1,16 @@
 import Mensaje from './Mensaje'
-import fs from 'fs'
 
 class MensajeBD {
-  private mensajes: Mensaje[];
-  constructor() {
-    this.mensajes = []
-  }
+  
 
   getAll () {
-    return this.mensajes
+    return Mensaje.find();
   }
 
-  add ( mensaje: any ) {
-    let nuevoMensaje = new Mensaje( mensaje.email, this.formatoDDMMYYYYHHMMSS(), mensaje.mensaje );
-    this.messageToFile(nuevoMensaje);
-    return nuevoMensaje
-  }
-
-  async messageToFile ( mensaje: any) {
-    await fs.promises.appendFile(`${__dirname}/mensajes.txt`, JSON.stringify(mensaje, null, '\t'), 'utf-8')
+  async add ( mensaje: any ) {
     
+    let nuevoMensaje = new Mensaje( { email: mensaje.email, fechaHora: this.formatoDDMMYYYYHHMMSS(), mensaje: mensaje.mensaje } )
+    return await nuevoMensaje.save()
   }
 
   formatoDDMMYYYYHHMMSS () {
