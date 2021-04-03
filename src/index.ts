@@ -6,7 +6,6 @@ import MensajeBD from './MensajeBD'
 import * as path from 'path';
 
 import mongoose from 'mongoose'
-import bodyParser from 'body-parser'
 
 
 export let producto = new ProductoBD()
